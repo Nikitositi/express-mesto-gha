@@ -18,7 +18,7 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((err) => {
       if (err.message === "NotFound") {
-        res
+        return res
           .status(404)
           .send({ message: "Пользователь по указанному _id не найден" });
       }
@@ -40,16 +40,16 @@ module.exports.createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
       }
       if (err.message === "ValidationError") {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
       }
-      res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -70,16 +70,16 @@ module.exports.updateUserProfile = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
       }
       if (err.message === "NotFound") {
-        res.status(404).send({
+        return res.status(404).send({
           message: "Пользователь по указанному _id не найден",
         });
       }
-      res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -99,15 +99,15 @@ module.exports.updateUserAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Переданы некорректные данные при обновлении аватара",
         });
       }
       if (err.message === "NotFound") {
-        res
+        return res
           .status(404)
           .send({ message: "Пользователь с указанным _id не найден" });
       }
-      res.status(500).send({ message: "Ошибка на стороне сервере" });
+      return res.status(500).send({ message: "Ошибка на стороне сервере" });
     });
 };
