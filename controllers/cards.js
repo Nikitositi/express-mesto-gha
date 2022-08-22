@@ -19,16 +19,16 @@ module.exports.createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Переданы некорректные данные при создании карточки",
         });
       }
       if (err.message === "ValidationError") {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Переданы некорректные данные при создании карточки",
         });
       }
-      res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -40,14 +40,14 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({ message: "Ошибка в запросе" });
+        return res.status(400).send({ message: "Ошибка в запросе" });
       }
       if (err.message === "NotFound") {
-        res
+        return res
           .status(404)
           .send({ message: "Карточка с указанным _id не найдена" });
       }
-      res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -63,16 +63,16 @@ module.exports.likeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Переданы некорректные данные для постановки лайка.",
         });
       }
       if (err.message === "NotFound") {
-        res
+        return res
           .status(404)
           .send({ message: "Карточка с указанным _id не найдена" });
       }
-      res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -88,15 +88,15 @@ module.exports.dislikeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Переданы некорректные данные для постановки лайка.",
         });
       }
       if (err.message === "NotFound") {
-        res
+        return res
           .status(404)
           .send({ message: "Карточка с указанным _id не найдена" });
       }
-      res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
