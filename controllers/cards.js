@@ -5,9 +5,14 @@ module.exports.getCards = (req, res) => {
     .then((cards) => {
       res.send(cards);
     })
-    .catch((err) =>
-      res.status(500).send({ message: "Ошибка на стороне сервера" })
-    );
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res
+          .status(400)
+          .send({ message: "Переданы некорректные данные при создании" });
+      }
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
+    });
 };
 
 module.exports.createCard = (req, res) => {

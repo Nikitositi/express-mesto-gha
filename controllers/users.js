@@ -6,6 +6,9 @@ module.exports.getUsers = (req, res) => {
       res.send(users);
     })
     .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(400).send({ message: "Переданы некорректные данные при создании" });
+      }
       res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
