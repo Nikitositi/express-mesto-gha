@@ -1,5 +1,4 @@
 const Card = require("../models/card");
-const errors = require("../constants/errors");
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -7,9 +6,7 @@ module.exports.getCards = (req, res) => {
       res.send(cards);
     })
     .catch((err) =>
-      res
-        .status(errors.status.serverError)
-        .send({ message: errors.messages.serverError })
+      res.status(500).send({ message: "Ошибка на стороне сервера" })
     );
 };
 
@@ -21,38 +18,35 @@ module.exports.createCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === errors.names.validationError) {
-        res
-          .status(errors.status.validationError)
-          .send({ message: errors.messages.validationError });
-      } else {
-        res
-          .status(errors.status.serverError)
-          .send({ message: errors.messages.serverError });
+      if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные при создании карточки",
+        });
       }
+      if (err.message === "ValidationError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные при создании карточки",
+        });
+      }
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
-      if (!card) {
-        res
-          .status(errors.status.castError)
-          .send({ message: errors.messages.castError });
-      }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === errors.names.validationError) {
-        res
-          .status(errors.status.validationError)
-          .send({ message: errors.messages.validationError });
-      } else {
-        res
-          .status(errors.status.serverError)
-          .send({ message: errors.messages.serverError });
+      if (err.name === "CastError") {
+        res.status(400).send({ message: "Ошибка в запросе" });
       }
+      if (err.message === "NotFound") {
+        res
+          .status(404)
+          .send({ message: "Карточка с указанным _id не найдена" });
+      }
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -63,23 +57,20 @@ module.exports.likeCard = (req, res) => {
     { new: true }
   )
     .then((card) => {
-      if (!card) {
-        res
-          .status(errors.status.castError)
-          .send({ message: errors.messages.castError });
-      }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === errors.names.validationError) {
-        res
-          .status(errors.status.validationError)
-          .send({ message: errors.messages.validationError });
-      } else {
-        res
-          .status(errors.status.serverError)
-          .send({ message: errors.messages.serverError });
+      if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные для постановки лайка.",
+        });
       }
+      if (err.message === "NotFound") {
+        res
+          .status(404)
+          .send({ message: "Карточка с указанным _id не найдена" });
+      }
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -90,22 +81,19 @@ module.exports.dislikeCard = (req, res) => {
     { new: true }
   )
     .then((card) => {
-      if (!card) {
-        res
-          .status(errors.status.castError)
-          .send({ message: errors.messages.castError });
-      }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === errors.names.validationError) {
-        res
-          .status(errors.status.validationError)
-          .send({ message: errors.messages.validationError });
-      } else {
-        res
-          .status(errors.status.serverError)
-          .send({ message: errors.messages.serverError });
+      if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные для постановки лайка.",
+        });
       }
+      if (err.message === "NotFound") {
+        res
+          .status(404)
+          .send({ message: "Карточка с указанным _id не найдена" });
+      }
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };

@@ -1,5 +1,4 @@
 const User = require("../models/user");
-const errors = require("../constants/errors");
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -7,32 +6,22 @@ module.exports.getUsers = (req, res) => {
       res.send(users);
     })
     .catch((err) =>
-      res
-        .status(errors.status.serverError)
-        .send({ message: errors.messages.serverError })
+      res.status(500).send({ message: "Ошибка на стороне сервера" })
     );
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (!user) {
-        res
-          .status(errors.status.castError)
-          .send({ message: errors.messages.castError });
-      }
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === errors.names.validationError) {
+      if (err.message === "NotFound") {
         res
-          .status(errors.status.validationError)
-          .send({ message: errors.messages.validationError });
-      } else {
-        res
-          .status(errors.status.serverError)
-          .send({ message: errors.messages.serverError });
+          .status(404)
+          .send({ message: "Пользователь по указанному _id не найден" });
       }
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -49,15 +38,17 @@ module.exports.createUser = (req, res) => {
       });
     })
     .catch((err) => {
-      if (err.name === errors.names.validationError) {
-        res
-          .status(errors.status.validationError)
-          .send({ message: errors.messages.validationError });
-      } else {
-        res
-          .status(errors.status.serverError)
-          .send({ message: errors.messages.serverError });
+      if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные при создании пользователя",
+        });
       }
+      if (err.message === "ValidationError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные при создании пользователя",
+        });
+      }
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -67,23 +58,20 @@ module.exports.updateUserProfile = (req, res) => {
 
   User.findByIdAndUpdate(id, { name, about })
     .then((user) => {
-      if (!user) {
-        res
-          .status(errors.status.castError)
-          .send({ message: errors.messages.castError });
-      }
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === errors.names.validationError) {
-        res
-          .status(errors.status.validationError)
-          .send({ message: errors.messages.validationError });
-      } else {
-        res
-          .status(errors.status.serverError)
-          .send({ message: errors.messages.serverError });
+      if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные при создании пользователя",
+        });
       }
+      if (err.message === "NotFound") {
+        res.status(404).send({
+          message: "Пользователь по указанному _id не найден",
+        });
+      }
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
 
@@ -92,22 +80,19 @@ module.exports.updateUserAvatar = (req, res) => {
   const id = req.user._id;
   User.findByIdAndUpdate(id, { avatar })
     .then((user) => {
-      if (!user) {
-        res
-          .status(errors.status.castError)
-          .send({ message: errors.messages.castError });
-      }
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === errors.names.validationError) {
-        res
-          .status(errors.status.validationError)
-          .send({ message: errors.messages.validationError });
-      } else {
-        res
-          .status(errors.status.serverError)
-          .send({ message: errors.messages.serverError });
+      if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные при обновлении аватара",
+        });
       }
+      if (err.message === "NotFound") {
+        res
+          .status(404)
+          .send({ message: "Пользователь с указанным _id не найден" });
+      }
+      res.status(500).send({ message: "Ошибка на стороне сервере" });
     });
 };
