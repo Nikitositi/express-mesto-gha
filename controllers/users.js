@@ -5,13 +5,14 @@ module.exports.getUsers = (req, res) => {
     .then((users) => {
       res.send(users);
     })
-    .catch((err) =>
-      res.status(500).send({ message: "Ошибка на стороне сервера" })
-    );
+    .catch((err) => {
+      res.status(500).send({ message: "Ошибка на стороне сервера" });
+    });
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(new Error("NotFound"))
     .then((user) => {
       res.send({ data: user });
     })
@@ -56,7 +57,14 @@ module.exports.updateUserProfile = (req, res) => {
   const { name, about } = req.body;
   const id = req.user._id;
 
-  User.findByIdAndUpdate(id, { name, about })
+  User.findByIdAndUpdate(
+    id,
+    { name, about },
+    {
+      runValidators: true,
+      new: true,
+    }
+  )
     .then((user) => {
       res.send(user);
     })
@@ -78,7 +86,14 @@ module.exports.updateUserProfile = (req, res) => {
 module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   const id = req.user._id;
-  User.findByIdAndUpdate(id, { avatar })
+  User.findByIdAndUpdate(
+    id,
+    { avatar },
+    {
+      runValidators: true,
+      new: true,
+    }
+  )
     .then((user) => {
       res.send(user);
     })
