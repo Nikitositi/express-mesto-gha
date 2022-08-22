@@ -5,50 +5,83 @@ module.exports.getUsers = (req, res) => {
     .then((users) => {
       res.send(users);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
+      if (!user) {
+        res
+          .status(404)
+          .send({ message: "Пользователь по указанному id не найден" });
+      }
       res.send({ data: user });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((user) => {
-      res.send({
-        _id: user._id,
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-      });
-    })
-    .catch((err) => console.log(err));
+  if (!name || !about || !avatar) {
+    res.status(400).send({
+      message: "Переданы некорректные данные при создании пользователя",
+    });
+  } else {
+    User.create({ name, about, avatar })
+      .then((user) => {
+        res.send({
+          _id: user._id,
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+        });
+      })
+      .catch((err) => res.status(500).send({ message: err.message }));
+  }
 };
 
 module.exports.updateUserProfile = (req, res) => {
   const { name, about } = req.body;
   const id = req.user._id;
 
-  User.findByIdAndUpdate(id, { name, about })
-    .then((user) => {
-      res.send({ data: user });
-    })
-    .catch((err) => console.log(err));
+  if (!name || !about) {
+    res.status(400).send({
+      message: "Переданы некорректные данные при обновлении профиля",
+    });
+  } else {
+    User.findByIdAndUpdate(id, { name, about })
+      .then((user) => {
+        if (!user) {
+          res
+            .status(404)
+            .send({ message: "Пользователь по указанному id не найден" });
+        }
+        res.send(user);
+      })
+      .catch((err) => res.status(500).send({ message: err.message }));
+  }
 };
 
 module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   const id = req.user._id;
 
-  User.findByIdAndUpdate(id, { avatar })
-    .then((user) => {
-      res.send({ data: user });
-    })
-    .catch((err) => console.log(err));
+  if (!avatar) {
+    res.status(400).send({
+      message: "Переданы некорректные данные при обновлении профиля",
+    });
+  } else {
+    User.findByIdAndUpdate(id, { avatar })
+      .then((user) => {
+        if (!user) {
+          res
+            .status(404)
+            .send({ message: "Пользователь по указанному id не найден" });
+        }
+        res.send(user);
+      })
+      .catch((err) => res.status(500).send({ message: err.message }));
+  }
 };
