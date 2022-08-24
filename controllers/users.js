@@ -44,7 +44,7 @@ module.exports.createUser = (req, res) => {
       });
     })
     .catch((err) => {
-      if (err.errors.name.name === "ValidatorError") {
+      if (err.errors.name || err.errors.about || err.errors.avatar) {
         return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });

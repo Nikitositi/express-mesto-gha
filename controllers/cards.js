@@ -23,7 +23,7 @@ module.exports.createCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.errors.name.name === "ValidatorError") {
+      if (err.errors.name || err.errors.link) {
         return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
