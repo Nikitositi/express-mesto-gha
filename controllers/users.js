@@ -6,9 +6,6 @@ module.exports.getUsers = (req, res) => {
       res.send(users);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(400).send({ message: "Переданы некорректные данные при создании" });
-      }
       res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
@@ -20,6 +17,11 @@ module.exports.getUserById = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(400).send({
+          message: "Переданы некорректные данные при поиске пользователя",
+        });
+      }
       if (err.message === "NotFound") {
         return res
           .status(404)
@@ -42,12 +44,7 @@ module.exports.createUser = (req, res) => {
       });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        return res.status(400).send({
-          message: "Переданы некорректные данные при создании пользователя",
-        });
-      }
-      if (err.message === "ValidationError") {
+      if (err.errors.name.name === "ValidatorError") {
         return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
@@ -68,11 +65,12 @@ module.exports.updateUserProfile = (req, res) => {
       new: true,
     }
   )
+    .orFail(new Error("NotFound"))
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.errors.name.name === "ValidatorError") {
         return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
@@ -101,9 +99,9 @@ module.exports.updateUserAvatar = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.errors.name.name === "ValidatorError") {
         return res.status(400).send({
-          message: "Переданы некорректные данные при обновлении аватара",
+          message: "Переданы некорректные данные при создании пользователя",
         });
       }
       if (err.message === "NotFound") {
