@@ -6,10 +6,10 @@ module.exports.getCards = (req, res) => {
       res.send(cards);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        res
-          .status(400)
-          .send({ message: "Переданы некорректные данные при создании" });
+      if (err.errors.name.name === "ValidatorError") {
+        return res.status(400).send({
+          message: "Переданы некорректные данные",
+        });
       }
       res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
@@ -23,14 +23,9 @@ module.exports.createCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.errors.name.name === "ValidatorError") {
         return res.status(400).send({
-          message: "Переданы некорректные данные при создании карточки",
-        });
-      }
-      if (err.message === "ValidationError") {
-        return res.status(400).send({
-          message: "Переданы некорректные данные при создании карточки",
+          message: "Переданы некорректные данные при создании пользователя",
         });
       }
       return res.status(500).send({ message: "Ошибка на стороне сервера" });
@@ -44,8 +39,10 @@ module.exports.deleteCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        return res.status(400).send({ message: "Ошибка в запросе" });
+      if (err.errors.name.name === "ValidatorError") {
+        return res.status(400).send({
+          message: "Переданы некорректные данные",
+        });
       }
       if (err.message === "NotFound") {
         return res
@@ -67,9 +64,9 @@ module.exports.likeCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.errors.name.name === "ValidatorError") {
         return res.status(400).send({
-          message: "Переданы некорректные данные для постановки лайка.",
+          message: "Переданы некорректные данные",
         });
       }
       if (err.message === "NotFound") {
@@ -92,9 +89,9 @@ module.exports.dislikeCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.errors.name.name === "ValidatorError") {
         return res.status(400).send({
-          message: "Переданы некорректные данные для постановки лайка.",
+          message: "Переданы некорректные данные",
         });
       }
       if (err.message === "NotFound") {
