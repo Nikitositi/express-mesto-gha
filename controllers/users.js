@@ -70,7 +70,7 @@ module.exports.updateUserProfile = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.errors.name.name === "ValidatorError") {
+      if (err.errors.name || err.errors.about) {
         return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
@@ -99,7 +99,7 @@ module.exports.updateUserAvatar = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.errors.name.name === "ValidatorError") {
+      if (err.errors.avatar) {
         return res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
