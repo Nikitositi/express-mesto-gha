@@ -34,6 +34,11 @@ module.exports.deleteCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(400).send({
+          message: "Переданы некорректные данные",
+        });
+      }
       if (err.message === "NotFound") {
         return res
           .status(404)
