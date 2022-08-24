@@ -6,11 +6,6 @@ module.exports.getCards = (req, res) => {
       res.send(cards);
     })
     .catch((err) => {
-      if (err.errors.name.name === "ValidatorError") {
-        return res.status(400).send({
-          message: "Переданы некорректные данные",
-        });
-      }
       res.status(500).send({ message: "Ошибка на стороне сервера" });
     });
 };
@@ -39,17 +34,12 @@ module.exports.deleteCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.errors.name.name === "ValidatorError") {
-        return res.status(400).send({
-          message: "Переданы некорректные данные",
-        });
-      }
       if (err.message === "NotFound") {
         return res
           .status(404)
-          .send({ message: "Карточка с указанным _id не найдена" });
+          .send({ message: "Карточка с указанным _id не найдена", ...err });
       }
-      return res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера", ...err });
     });
 };
 
@@ -64,7 +54,7 @@ module.exports.likeCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.errors.name.name === "ValidatorError") {
+      if (err.kind === "ObjectId") {
         return res.status(400).send({
           message: "Переданы некорректные данные",
         });
@@ -72,9 +62,9 @@ module.exports.likeCard = (req, res) => {
       if (err.message === "NotFound") {
         return res
           .status(404)
-          .send({ message: "Карточка с указанным _id не найдена" });
+          .send({ message: "Карточка с указанным _id не найдена", ...err });
       }
-      return res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера", ...err });
     });
 };
 
@@ -89,7 +79,7 @@ module.exports.dislikeCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.errors.name.name === "ValidatorError") {
+      if (err.kind === "ObjectId") {
         return res.status(400).send({
           message: "Переданы некорректные данные",
         });
@@ -97,8 +87,8 @@ module.exports.dislikeCard = (req, res) => {
       if (err.message === "NotFound") {
         return res
           .status(404)
-          .send({ message: "Карточка с указанным _id не найдена" });
+          .send({ message: "Карточка с указанным _id не найдена", ...err });
       }
-      return res.status(500).send({ message: "Ошибка на стороне сервера" });
+      return res.status(500).send({ message: "Ошибка на стороне сервера", ...err });
     });
 };
