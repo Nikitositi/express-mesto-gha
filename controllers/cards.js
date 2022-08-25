@@ -39,14 +39,9 @@ module.exports.deleteCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(errors.badRequest).send({
-          message: "Переданы некорректные данные",
-        });
-      }
       if (err.message === "NotFound") {
         return res
-          .status(errors.notFound)
+          .status(errors.badRequest)
           .send({ message: "Карточка с указанным _id не найдена" });
       }
       return res
@@ -73,7 +68,7 @@ module.exports.likeCard = (req, res) => {
       }
       if (err.message === "NotFound") {
         return res
-          .status(errors.notFound)
+          .status(errors.badRequest)
           .send({ message: "Карточка с указанным _id не найдена" });
       }
       return res
@@ -100,7 +95,7 @@ module.exports.dislikeCard = (req, res) => {
       }
       if (err.message === "NotFound") {
         return res
-          .status(errors.notFound)
+          .status(errors.badRequest)
           .send({ message: "Карточка с указанным _id не найдена" });
       }
       return res
