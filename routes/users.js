@@ -1,27 +1,27 @@
-const usersRouter = require("express").Router();
-const { celebrate, Joi } = require("celebrate");
+const usersRouter = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 const {
   getUsers,
   getUserById,
   updateUserProfile,
   updateUserAvatar,
   getCurrentUser,
-} = require("../controllers/users");
+} = require('../controllers/users');
 
-usersRouter.get("/", getUsers);
-usersRouter.get("/me", getCurrentUser);
+usersRouter.get('/', getUsers);
+usersRouter.get('/me', getCurrentUser);
 usersRouter.get(
-  "/:userId",
+  '/:userId',
   celebrate({
     params: Joi.object().keys({
-      userId: Joi.string().pattern(/[\da-f]{24}/),
+      userId: Joi.string().hex(),
     }),
   }),
   getUserById,
 );
 
 usersRouter.patch(
-  "/me",
+  '/me',
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
@@ -31,11 +31,11 @@ usersRouter.patch(
   updateUserProfile,
 );
 usersRouter.patch(
-  "/me/avatar",
+  '/me/avatar',
   celebrate({
     body: Joi.object().keys({
       avatar: Joi.string().pattern(
-        /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?#?$/,
+        /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?#?$/,
       ),
     }),
   }),

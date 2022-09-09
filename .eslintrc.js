@@ -4,17 +4,12 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: "airbnb-base",
+  extends: 'airbnb-base',
   overrides: [],
   parserOptions: {
-    ecmaVersion: "latest",
+    ecmaVersion: 'latest',
   },
   rules: {
-    "no-underscore-dangle": ["error", { allow: ["_id"] }],
-    quotes: ["error", "double"],
-    "linebreak-style": 0,
-    "no-console": "off",
-    "no-useless-escape": "off",
-    "consistent-return": "off",
+    'no-underscore-dangle': ['error', { allow: ['_id'] }],
   },
 };
