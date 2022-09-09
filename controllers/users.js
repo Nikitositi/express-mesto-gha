@@ -28,14 +28,16 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(new BadRequestError("Некорректный id"));
+        return next(new BadRequestError("Некорректный id"));
       }
       next(err);
     });
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
+  const userId = req.user._id;
+
+  User.findById(userId)
     .then((user) => {
       if (!user) {
         throw new NotFoundError("Пользователь c таким id не найден");
@@ -45,7 +47,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(new BadRequestError("Некорректный id"));
+        return next(new BadRequestError("Некорректный id"));
       }
       next(err);
     });
@@ -73,12 +75,12 @@ module.exports.createUser = (req, res, next) => {
         })
         .catch((err) => {
           if (err.code === 11000) {
-            next(
+            return next(
               new UniqueValueError("Пользователь с таким email уже существует"),
             );
           }
           if (err.name === "ValidationError") {
-            next(
+            return next(
               new BadRequestError(
                 "Переданы некорректные данные при создании пользователя",
               ),
@@ -107,7 +109,7 @@ module.exports.login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.code === 11000) {
-        next(
+        return next(
           new UniqueValueError("Пользователь с таким email уже существует"),
         );
       }

@@ -9,6 +9,7 @@ const {
 } = require("../controllers/users");
 
 usersRouter.get("/", getUsers);
+usersRouter.get("/me", getCurrentUser);
 usersRouter.get(
   "/:userId",
   celebrate({
@@ -17,15 +18,6 @@ usersRouter.get(
     }),
   }),
   getUserById,
-);
-usersRouter.get(
-  "/me",
-  celebrate({
-    params: Joi.object().keys({
-      userId: Joi.string().pattern(/[\da-f]{24}/),
-    }),
-  }),
-  getCurrentUser,
 );
 
 usersRouter.patch(

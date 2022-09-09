@@ -15,5 +15,6 @@ module.exports = {
     "linebreak-style": 0,
     "no-console": "off",
     "no-useless-escape": "off",
+    "consistent-return": "off",
   },
 };
