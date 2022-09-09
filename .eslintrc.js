@@ -14,5 +14,6 @@ module.exports = {
     quotes: ["error", "double"],
     "linebreak-style": 0,
     "no-console": "off",
+    "no-useless-escape": "off",
   },
 };
